@@ -10,7 +10,7 @@
 // 5. También puedes usar Apps Script Web App (más fácil)
 
 // Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf2zjJq_dpOeSYdROSJ72BLpm6QzBoiubZCiQrpnE2GN-FbqUfBRVh7b1lUVbBSEMw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxN6WqvfYAAaF1JD1lMpQhjvT30Wnu9caVCT1c9EG8Sm3wNAg4GgyHVX__0_5_w1EYU/exec';
 
 // Sheet ID
 const SHEET_ID = '1C9JdA-_eJ6sI9_fa1Q_8oY9vxXUuxXESjCcMfcFGOWc';
@@ -244,18 +244,17 @@ async function addTeam(name, description) {
         const payload = {
             action: 'addTeam',
             userEmail: currentUser.email,
-            name,
-            description
+            name: name,
+            description: description
         };
         console.log('Payload:', payload);
         
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-        });
+        // Cambiar a GET con parámetros en la URL
+        const params = new URLSearchParams(payload);
+        const url = `${APPS_SCRIPT_URL}?${params.toString()}`;
+        console.log('URL:', url);
+        
+        const response = await fetch(url);
         
         console.log('Response status:', response.status);
         const data = await response.json();
@@ -427,16 +426,11 @@ async function handleDeletePhoto() {
     showLoading(true);
     
     try {
-        await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'deletePhoto',
-                photoId: currentModalPhoto.id
-            })
+        const params = new URLSearchParams({
+            action: 'deletePhoto',
+            photoId: currentModalPhoto.id
         });
+        await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`);
         
         // Recargar fotos del equipo
         closeModal();
@@ -521,19 +515,14 @@ async function handleSendMessage() {
 
 async function saveMessage(teamId, message) {
     try {
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'saveMessage',
-                teamId,
-                userEmail: currentUser.email,
-                message,
-                timestamp: new Date().toISOString()
-            })
+        const params = new URLSearchParams({
+            action: 'saveMessage',
+            teamId: teamId,
+            userEmail: currentUser.email,
+            message: message,
+            timestamp: new Date().toISOString()
         });
+        const response = await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`);
         return await response.json();
     } catch (error) {
         console.error('Error en saveMessage:', error);
