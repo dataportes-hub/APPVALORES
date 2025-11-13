@@ -10,7 +10,7 @@
 // 5. También puedes usar Apps Script Web App (más fácil)
 
 // Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybZy2NvoYeyrs7v9RRPc-fLWtNBNhnBADvrVRcks8X0gcZbaOeXSW9QT8SD7VpssRa/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf2zjJq_dpOeSYdROSJ72BLpm6QzBoiubZCiQrpnE2GN-FbqUfBRVh7b1lUVbBSEMw/exec';
 
 // Sheet ID
 const SHEET_ID = '1C9JdA-_eJ6sI9_fa1Q_8oY9vxXUuxXESjCcMfcFGOWc';
@@ -215,14 +215,24 @@ async function handleCreateTeam(e) {
     const name = document.getElementById('team-name').value;
     const description = document.getElementById('team-description').value;
     
+    console.log('Creando equipo:', { name, description, userEmail: currentUser.email });
+    
     try {
         const newTeam = await addTeam(name, description);
-        allTeams.push(newTeam);
-        renderTeams();
+        console.log('Equipo creado:', newTeam);
         
-        document.getElementById('team-form').reset();
+        if (newTeam && newTeam.id) {
+            allTeams.push(newTeam);
+            renderTeams();
+            document.getElementById('team-form').reset();
+            alert('Equipo creado exitosamente!');
+        } else {
+            console.error('Error: respuesta sin ID', newTeam);
+            alert('Error al crear equipo. Revisa la consola.');
+        }
     } catch (error) {
         console.error('Error creando equipo:', error);
+        alert('Error al crear equipo: ' + error.message);
     }
     
     showLoading(false);
@@ -230,19 +240,31 @@ async function handleCreateTeam(e) {
 
 async function addTeam(name, description) {
     try {
+        console.log('Enviando request a Apps Script...');
+        const payload = {
+            action: 'addTeam',
+            userEmail: currentUser.email,
+            name,
+            description
+        };
+        console.log('Payload:', payload);
+        
         const response = await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                action: 'addTeam',
-                userEmail: currentUser.email,
-                name,
-                description
-            })
+            body: JSON.stringify(payload)
         });
+        
+        console.log('Response status:', response.status);
         const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
         return data.team;
     } catch (error) {
         console.error('Error en addTeam:', error);
