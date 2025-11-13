@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Equipos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Pantalla de Login -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <h1>Iniciar Sesión</h1>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                <input type="password" id="login-password" placeholder="Contraseña" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <div id="login-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Pantalla Principal -->
+    <div id="main-screen" class="screen">
+        <header>
+            <h1>Mis Equipos</h1>
+            <div class="header-actions">
+                <span id="user-email"></span>
+                <button id="logout-btn" class="btn-secondary">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Formulario para crear equipo -->
+            <div class="create-team-section">
+                <h2>Crear Nuevo Equipo</h2>
+                <form id="team-form">
+                    <input type="text" id="team-name" placeholder="Nombre del equipo" required>
+                    <input type="text" id="team-description" placeholder="Descripción (opcional)">
+                    <button type="submit">Crear Equipo</button>
+                </form>
+            </div>
+
+            <!-- Lista de equipos -->
+            <div class="teams-section">
+                <h2>Tus Equipos</h2>
+                <div id="teams-list" class="teams-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Detalle del Equipo -->
+    <div id="team-detail-screen" class="screen">
+        <header>
+            <button id="back-btn" class="btn-secondary">← Volver</button>
+            <h1 id="team-detail-name"></h1>
+            <div class="team-budget">
+                <span>Total Gastado:</span>
+                <span id="team-budget-amount" class="budget-amount">$0</span>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Sección de fotos -->
+            <div class="photos-section">
+                <h2>Galería de Fotos</h2>
+                <div class="upload-section">
+                    <input type="file" id="photo-upload" accept="image/*" multiple>
+                    <button id="upload-btn">Subir Fotos</button>
+                </div>
+                
+                <!-- Slideshow -->
+                <div id="slideshow-container" class="slideshow-container">
+                    <div id="slideshow-images"></div>
+                    <button class="slide-btn prev" id="prev-btn">❮</button>
+                    <button class="slide-btn next" id="next-btn">❯</button>
+                </div>
+            </div>
+
+            <!-- Sección de chat -->
+            <div class="chat-section">
+                <h2>Chat del Equipo</h2>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+                    <button id="mic-btn" class="mic-btn" title="Dictar mensaje">🎤</button>
+                    <button id="send-btn">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver foto completa -->
+    <div id="photo-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">✕</button>
+            <button class="modal-delete" id="modal-delete">🗑️ Eliminar</button>
+            <button class="modal-zoom" id="modal-zoom">🔍 Zoom</button>
+            <img id="modal-image" src="" alt="Foto">
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
